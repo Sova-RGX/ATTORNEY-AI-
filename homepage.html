@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Attorney.AI</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to right, #111, #222);
+      color: white;
+      overflow-x: hidden;
+    }
+    .sidebar {
+      background-color: #14627d;
+      width: 140px;
+      position: absolute;
+      top: 70px;
+      left: 0;
+      padding: 20px 0;
+      box-sizing: border-box;
+      border-radius: 20px;
+      z-index: 10;
+      transition: background-color 0.3s ease;
+    }
+    .sidebar.drag {
+      cursor: move;
+    }
+    .sidebar a {
+      display: block;
+      padding: 10px 20px;
+      color: white;
+      text-decoration: none;
+      font-size: 16px;
+      text-align: center;
+      border-radius: 999px;
+      margin: 8px 10px;
+      transition: background-color 0.3s ease;
+    }
+    .sidebar a:hover {
+      background-color: rgba(255, 255, 255, 0.15);
+    }
+    .sidebar a.active {
+      background-color: rgba(255, 255, 255, 0.3);
+      font-weight: bold;
+    }
+    .header {
+      background-color: #2e2e2e;
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 30px;
+      width: 100%;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 20;
+      box-sizing: border-box;
+    }
+    .header h1 {
+      margin: 0;
+      font-size: 22px;
+      font-weight: 600;
+    }
+    .try-button {
+      background-color: #0074D9;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: box-shadow 0.3s ease;
+    }
+    .try-button:hover {
+      box-shadow: 0 4px 15px rgba(0, 116, 217, 0.6);
+    }
+    .main-content {
+      padding: 120px 20px 60px;
+      margin-left: 140px;
+    }
+    .content-section {
+      display: none;
+      text-align: center;
+      min-height: calc(100vh - 140px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .content-section.active {
+      display: flex;
+    }
+    .content-section h2 {
+      font-size: 40px;
+      font-weight: 300;
+      margin-bottom: 30px;
+    }
+    .content-section p {
+      font-size: 18px;
+      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto 20px;
+    }
+    .footer {
+      text-align: center;
+      font-style: italic;
+      color: #ccc;
+      padding: 20px;
+      margin-left: 140px;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>🔨 Attorney.AI</h1>
+    <button class="try-button">Try Attorney</button>
+  </div>
+
+  <div class="sidebar" id="sidebar">
+    <a href="#home" class="active" data-target="home">Home</a>
+    <a href="#features" data-target="features">Features</a>
+    <a href="#blog" data-target="blog">Blog</a>
+    <a href="#faqs" data-target="faqs">Faq's</a>
+    <a href="#usecases" data-target="usecases">Use Cases</a>
+    <a href="#reviews" data-target="reviews">Reviews</a>
+    <a href="#about" data-target="about">About Us</a>
+  </div>
+
+  <div class="main-content">
+    <div id="home" class="content-section active">
+      <h2>Welcome to Attorney.AI <strong>Attorney</strong></h2>
+      <p>At Attorney.AI, we harness the power of advanced artificial intelligence to make legal support <strong>faster</strong>, <strong>smarter</strong>, and more <strong>accessible</strong>.</p>
+      <p>Whether you're a law firm looking to streamline operations or an individual in need of quick legal clarity, our AI-driven platform delivers real-time insights, document analysis, legal research, and case assistance all with the precision and professionalism you expect from top-tier legal services.</p>
+      <p>Empower your legal journey with technology built to understand, support, and solve — without the delays, confusion, or high costs.</p>
+    </div>
+    <div id="features" class="content-section">
+      <h2>Features</h2>
+      <p>Explore our AI-powered tools, document review engine, legal research assistant, and more.</p>
+    </div>
+    <div id="blog" class="content-section">
+      <h2>Blog</h2>
+      <p>Read the latest thoughts, updates, and case studies from the Attorney.AI team.</p>
+    </div>
+    <div id="faqs" class="content-section">
+      <h2>Frequently Asked Questions</h2>
+      <p>Answers to the most common legal tech queries we get.</p>
+    </div>
+    <div id="usecases" class="content-section">
+      <h2>Use Cases</h2>
+      <p>Discover how Attorney.AI supports solo users, startups, and enterprise legal departments.</p>
+    </div>
+    <div id="reviews" class="content-section">
+      <h2>Reviews</h2>
+      <p>What our users are saying about the platform.</p>
+    </div>
+    <div id="about" class="content-section">
+      <h2>About Us</h2>
+      <p>Learn about our mission, team, and vision for the future of legal services.</p>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p>Secure. Smart. Unmatched Legal Insight.</p>
+  </div>
+
+  <script>
+    const sidebar = document.getElementById('sidebar');
+    const navLinks = sidebar.querySelectorAll('a');
+    const sections = document.querySelectorAll('.content-section');
+
+    let isDragging = false;
+    let offsetX, offsetY;
+    let originalTop = sidebar.offsetTop;
+    let originalLeft = sidebar.offsetLeft;
+    let isAutoMoving = false;
+
+    sidebar.addEventListener('mousedown', function (e) {
+      if (isAutoMoving) return;
+      isDragging = true;
+      offsetX = e.clientX - sidebar.offsetLeft;
+      offsetY = e.clientY - sidebar.offsetTop;
+      sidebar.classList.add('drag');
+    });
+
+    document.addEventListener('mouseup', function () {
+      isDragging = false;
+      sidebar.classList.remove('drag');
+    });
+
+    document.addEventListener('mousemove', function (e) {
+      if (isDragging) {
+        sidebar.style.left = `${e.clientX - offsetX}px`;
+        sidebar.style.top = `${e.clientY - offsetY}px`;
+        originalTop = sidebar.offsetTop;
+        originalLeft = sidebar.offsetLeft;
+      }
+    });
+
+    navLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const targetId = link.getAttribute('data-target');
+        const targetSection = document.getElementById(targetId);
+
+        navLinks.forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+
+        sections.forEach(sec => sec.classList.remove('active'));
+        targetSection.classList.add('active');
+
+        const scrollTargetY = targetSection.offsetTop - 50;
+        const sidebarTargetY = scrollTargetY + 70;
+        const scrollStartY = window.scrollY;
+        const sidebarStartY = sidebar.offsetTop;
+
+        const distanceScroll = scrollTargetY - scrollStartY;
+        const distanceSidebar = sidebarTargetY - sidebarStartY;
+        const duration = 800;
+        let startTime = null;
+
+        isAutoMoving = true;
+
+        function animateScroll(currentTime) {
+          if (startTime === null) startTime = currentTime;
+          const timeElapsed = currentTime - startTime;
+          const progress = Math.min(timeElapsed / duration, 1);
+
+          window.scrollTo(0, scrollStartY + distanceScroll * progress);
+          sidebar.style.top = `${sidebarStartY + distanceSidebar * progress}px`;
+
+          if (progress < 1) {
+            requestAnimationFrame(animateScroll);
+          } else {
+            isAutoMoving = false;
+            originalTop = sidebar.offsetTop;
+          }
+        }
+
+        requestAnimationFrame(animateScroll);
+      });
+    });
+  </script>
+</body>
+</html>
+
