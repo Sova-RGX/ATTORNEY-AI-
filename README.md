@@ -16,6 +16,12 @@ The prototype focuses on presenting the user experience and interface design for
 - Multi-page navigation
 - User interface prototype
 - Clickable navigation between pages
+- Prototype Design of Home Page:  <img width="1600" height="764" alt="image" src="https://github.com/user-attachments/assets/965f875e-1c78-41ac-8254-abbac1ca83f5" />
+
+- Prototype Design of Signup Page: <img width="1600" height="751" alt="image" src="https://github.com/user-attachments/assets/8d3da8d2-254b-4732-9410-a86bb141a02f" />
+
+
+
 
 ## 🛠️ Tech Stack
 
